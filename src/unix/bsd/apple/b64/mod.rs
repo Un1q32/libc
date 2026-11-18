@@ -62,8 +62,6 @@ cfg_if! {
 }
 
 extern "C" {
-    // `exchangedata` is prohibited on tvOS and watchOS.
-    #[cfg(not(any(target_os = "tvos", target_os = "watchos")))]
     pub fn exchangedata(path1: *const c_char, path2: *const c_char, options: c_uint) -> c_int;
 }
 

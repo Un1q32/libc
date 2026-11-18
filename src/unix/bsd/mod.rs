@@ -421,13 +421,9 @@ pub const POLLRDBAND: c_short = 0x080;
 pub const POLLWRBAND: c_short = 0x100;
 
 cfg_if! {
-    // Not yet implemented on NetBSD, and not present on iOS/tvOS/watchOS/visionOS.
+    // Not yet implemented on NetBSD
     if #[cfg(not(any(
         target_os = "netbsd",
-        target_os = "ios",
-        target_os = "tvos",
-        target_os = "watchos",
-        target_os = "visionos",
     )))] {
         pub const BIOCGBLEN: c_ulong = 0x40044266;
         pub const BIOCSBLEN: c_ulong = 0xc0044266;
@@ -465,12 +461,8 @@ pub const ITIMER_VIRTUAL: c_int = 1;
 pub const ITIMER_PROF: c_int = 2;
 
 cfg_if! {
-    // Not present on iOS/tvOS/watchOS/visionOS
     if #[cfg(not(any(
-        target_os = "ios",
-        target_os = "tvos",
-        target_os = "watchos",
-        target_os = "visionos",
+        target_os = "nothing",
     )))] {
         // net/route.h
 
@@ -743,8 +735,6 @@ extern "C" {
         link_name = "sigaltstack$UNIX2003"
     )]
     #[cfg_attr(target_os = "netbsd", link_name = "__sigaltstack14")]
-    // `sigaltstack` is prohibited on tvOS and watchOS.
-    #[cfg(not(any(target_os = "tvos", target_os = "watchos")))]
     pub fn sigaltstack(ss: *const stack_t, oss: *mut stack_t) -> c_int;
     #[cfg_attr(target_os = "netbsd", link_name = "__sigsuspend14")]
     pub fn sigsuspend(mask: *const crate::sigset_t) -> c_int;
@@ -906,9 +896,7 @@ extern "C" {
 }
 
 cfg_if! {
-    // `syscall` is prohibited on tvOS and watchOS (and strongly discouraged
-    // on iOS and macOS).
-    if #[cfg(not(any(target_os = "tvos", target_os = "watchos")))] {
+    if #[cfg(not(any(target_os = "nothing")))] {
         extern "C" {
             #[cfg_attr(
                 target_os = "openbsd",

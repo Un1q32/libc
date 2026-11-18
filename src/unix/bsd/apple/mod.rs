@@ -5035,11 +5035,7 @@ extern "C" {
         infop: *mut crate::siginfo_t,
         options: c_int,
     ) -> c_int;
-    // `brk` is prohibited on tvOS and watchOS.
-    #[cfg(not(any(target_os = "tvos", target_os = "watchos")))]
     pub fn brk(addr: *const c_void) -> *mut c_void;
-    // `sbrk` is prohibited on tvOS and watchOS.
-    #[cfg(not(any(target_os = "tvos", target_os = "watchos")))]
     pub fn sbrk(increment: c_int) -> *mut c_void;
     pub fn settimeofday(tv: *const crate::timeval, tz: *const crate::timezone) -> c_int;
     #[deprecated(since = "0.2.55", note = "Use the `mach2` crate instead")]
@@ -5430,8 +5426,6 @@ extern "C" {
     pub fn mknodat(dirfd: c_int, pathname: *const c_char, mode: mode_t, dev: dev_t) -> c_int;
     pub fn freadlink(fd: c_int, buf: *mut c_char, size: size_t) -> c_int;
 
-    // exec* marked as prohibited on tvOS and watchOS.
-    #[cfg(not(any(target_os = "tvos", target_os = "watchos")))]
     pub fn execvP(
         file: *const c_char,
         search_path: *const c_char,
@@ -5454,8 +5448,7 @@ pub unsafe fn mach_task_self() -> crate::mach_port_t {
 }
 
 cfg_if! {
-    // Prohibited on iOS/tvOS/watchOS/visionOS
-    if #[cfg(target_os = "macos")] {
+    if #[cfg(target_vendor = "apple")] {
         extern "C" {
             pub fn clock_settime(clock_id: crate::clockid_t, tp: *const crate::timespec) -> c_int;
 
@@ -5527,8 +5520,6 @@ cfg_if! {
                 needle: *const c_void,
                 needlelen: size_t,
             ) -> *mut c_void;
-            // `task_set_info` is prohibited on tvOS and watchOS.
-            #[cfg(not(any(target_os = "tvos", target_os = "watchos")))]
             pub fn task_set_info(
                 target_task: crate::task_t,
                 flavor: crate::task_flavor_t,

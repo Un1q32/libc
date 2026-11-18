@@ -385,12 +385,8 @@ pub const IN6ADDR_ANY_INIT: in6_addr = in6_addr {
 };
 
 cfg_if! {
-    // Not present on iOS/tvOS/watchOS/visionOS
     if #[cfg(not(any(
-        target_os = "ios",
-        target_os = "tvos",
-        target_os = "watchos",
-        target_os = "visionos",
+        target_os = "nothing",
     )))] {
         pub const ARPOP_REQUEST: u16 = 1;
         pub const ARPOP_REPLY: u16 = 2;
@@ -786,13 +782,6 @@ extern "C" {
         all(target_os = "macos", target_arch = "x86"),
         link_name = "system$UNIX2003"
     )]
-    // Not available on iOS/tvOS/watchOS/visionOS
-    #[cfg(not(any(
-        target_os = "ios",
-        target_os = "tvos",
-        target_os = "watchos",
-        target_os = "visionos"
-    )))]
     pub fn system(s: *const c_char) -> c_int;
     pub fn getenv(s: *const c_char) -> *mut c_char;
 
@@ -1154,27 +1143,19 @@ extern "C" {
     pub fn dup(fd: c_int) -> c_int;
     pub fn dup2(src: c_int, dst: c_int) -> c_int;
 
-    // exec* marked as prohibited on tvOS and watchOS.
-    #[cfg(not(any(target_os = "tvos", target_os = "watchos")))]
     pub fn execl(path: *const c_char, arg0: *const c_char, ...) -> c_int;
-    #[cfg(not(any(target_os = "tvos", target_os = "watchos")))]
     pub fn execle(path: *const c_char, arg0: *const c_char, ...) -> c_int;
-    #[cfg(not(any(target_os = "tvos", target_os = "watchos")))]
     pub fn execlp(file: *const c_char, arg0: *const c_char, ...) -> c_int;
 
     // DIFF(main): changed to `*const *mut` in e77f551de9
-    #[cfg(not(any(target_os = "tvos", target_os = "watchos")))]
     pub fn execv(prog: *const c_char, argv: *const *const c_char) -> c_int;
-    #[cfg(not(any(target_os = "tvos", target_os = "watchos")))]
     pub fn execve(
         prog: *const c_char,
         argv: *const *const c_char,
         envp: *const *const c_char,
     ) -> c_int;
-    #[cfg(not(any(target_os = "tvos", target_os = "watchos")))]
     pub fn execvp(c: *const c_char, argv: *const *const c_char) -> c_int;
 
-    #[cfg(not(any(target_os = "tvos", target_os = "watchos")))]
     pub fn fork() -> pid_t;
     pub fn fpathconf(filedes: c_int, name: c_int) -> c_long;
     pub fn getcwd(buf: *mut c_char, size: size_t) -> *mut c_char;
